@@ -20,6 +20,9 @@ Vue.use(Vuetify);
 import VueCookies from 'vue-cookies'
 Vue.use(VueCookies)
 
+import Vuelidate from 'vuelidate'
+Vue.use(Vuelidate)
+
 const app = new Vue({
     el: '#app',
     router,

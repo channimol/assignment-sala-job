@@ -6,10 +6,13 @@ use Laravel\Passport\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, Notifiable;
+    use HasRoles, HasApiTokens, Notifiable;
+
+    protected $guard_name = 'web';
 
     /**
      * The attributes that are mass assignable.
@@ -17,7 +20,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'first_name', 'last_name', 'dob', 'gender_id', 'phone', 'department_id', 'role_id', 'email', 'password',
     ];
 
     /**
@@ -26,7 +29,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'password', 'remember_token', 'email_verified_at',
     ];
 
     /**
@@ -37,5 +40,42 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-}
 
+    protected $appends = ['role_list', 'department_name', 'media_url'];
+
+    public function media()
+    {
+        return $this->morphOne(Media::class, 'mediable');
+    }
+
+    public function jobs()
+    {
+        return $this->hasMany(Job::class);
+    }
+
+    public function department()
+    {
+        return $this->belongsTo(Department::class);
+    }
+
+    public function getRoleListAttribute()
+    {
+        return $this->roles->pluck('name');
+    }
+
+    public function getDepartmentNameAttribute()
+    {
+        $department = $this->department;
+        if (is_null($department)) {
+            return  null;
+        } else {
+            return $department->name;
+        }
+    }
+
+    public function getMediaUrlAttribute()
+    {
+        $media = $this->mediatable;
+        return $media;
+    }
+}

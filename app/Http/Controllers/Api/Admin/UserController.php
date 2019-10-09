@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Api\Admin;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -14,35 +14,20 @@ use App\Models\Role;
 
 class UserController extends Controller
 {
-
-    public function index() {
-        return view('admin.users.list');
-    }
-    
-    public function create() {
-        return view('admin.users.create');
-    }
-
-    public function view() {
-        return view('admin.users.show');
-    }
-
-    public function edit() {
-        return view('admin.users.create');
-    }
-
-    public function show($id) {
+    public function show($id)
+    {
         try {
             $user = User::find($id);
             if ($user) {
                 return $user->with('roles', 'department', 'media')->first();
             }
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             return 'could not find user';
         }
     }
 
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         try {
             $this->validate($request, [
                 'first_name' => 'required',
@@ -63,11 +48,11 @@ class UserController extends Controller
 
             if ($request->hasfile('photo')) {
                 $original_extension = $request->file('photo')->getClientOriginalExtension();
-                $filename = time() . '.'. $original_extension;
+                $filename = time() . '.' . $original_extension;
                 $storePath = "images/users/$filename";
                 $contents = File::get($file);
                 Storage::disk('public')->put($storePath, $contents);
-                
+
                 Media::create([
                     "mediable_type" => User::class,
                     "mediable_id" => $user->id,
@@ -76,36 +61,36 @@ class UserController extends Controller
             }
 
             return 'create user successfully';
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             return 'could not create user';
         }
     }
 
-    public function update(Request $request, $id) {
+    public function update(Request $request, $id)
+    {
         try {
             $user = User::find($id);
             if ($user) {
                 $user->update($request->all());
                 return $user;
             }
-
-        } catch(Exception $e) {
-
-        }
+        } catch (Exception $e) { }
     }
 
-    public function delete($id) {
+    public function delete($id)
+    {
         try {
             $user = User::find($id);
             $user->delete();
-        } catch(Exception $e) {
-            return "error ". $e;
+        } catch (Exception $e) {
+            return "error " . $e;
         }
     }
 
-    public function getListUsers() {
+    public function getListUsers()
+    {
 
-        $users = User::whereHas('roles', function($q){
+        $users = User::whereHas('roles', function ($q) {
             $q->where('name', '!=', 'administrator');
         })->with('roles', 'department', 'media')->get();
 

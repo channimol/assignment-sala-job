@@ -23,7 +23,9 @@ class CreateJobsTable extends Migration
             $table->integer('schedule_type_id')->nullable();  // [1: fulltime, 2:parttime]
             $table->integer('department_id')->nullable();
             $table->integer('published_by');
-            
+            $table->string('contact_email');
+            $table->string('contact_number');
+
             $table->foreign('department_id')
                 ->references('id')
                 ->on('departments');
@@ -31,7 +33,7 @@ class CreateJobsTable extends Migration
             $table->foreign('published_by')
                 ->references('id')
                 ->on('users');
-                    
+
             $table->timestamps();
         });
     }

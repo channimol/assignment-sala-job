@@ -22,6 +22,14 @@ window._ = require('lodash');
 window.axios = require('axios');
 
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+window.axios.defaults.baseURL = document.head.querySelector('meta[name="api-base-url"]').content;
+console.log('baseurl====', document.head.querySelector('meta[name="api-base-url"]').content)
+
+let token = window.$cookies.get('token')
+
+if (token) {
+    window.axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
+}
 
 /**
  * Echo exposes an expressive API for subscribing to channels and listening

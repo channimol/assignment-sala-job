@@ -5,6 +5,6 @@ export const StudentRoutes = {
     path: '/home',
     component: FrontEndLayout,
     children: [
-        { path: '/', component:  FrontEndIndex},
+        { path: '', component: FrontEndIndex },
     ]
 }
