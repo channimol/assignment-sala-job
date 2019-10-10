@@ -9,23 +9,16 @@ class Job extends Model
     protected $fillable = [
         'title', 'description', 'requirement', 'salary',
         'job_source_id', 'schedule_type_id', 'department_id',
-        'published_by'
+        'published_by', 'contact_email'
     ];
 
-    protected $appends = ['user_email'];
-
-    public function users()
+    public function publisher()
     {
-        $this->belongsTo(User::class, 'id', 'published_by');
+        return $this->belongsTo(User::class, 'published_by', 'id');
     }
 
     public function medias()
     {
-        $this->morphMany(Media::class, 'mediable');
-    }
-
-    public function getUserEmailAttribute()
-    {
-        return $this->users();
+        return $this->morphMany(Media::class, 'mediable');
     }
 }

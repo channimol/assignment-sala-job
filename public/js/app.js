@@ -2694,7 +2694,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       if (this.$v.$invalid) return;
       var data = {
         grant_type: "password",
-        client_secret: "XHIa391bUR1sfcvKCngCTyUmutTm2yHCHcSq9lOT",
+        client_secret: "V7PWPzVfpbPdicDgHlmICl4yVXThhdtpoJMqL5Ol",
         client_id: 1,
         username: this.email,
         password: this.password

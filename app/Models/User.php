@@ -50,12 +50,17 @@ class User extends Authenticatable
 
     public function jobs()
     {
-        return $this->hasMany(Job::class);
+        return $this->hasMany(Job::class, 'published_by', 'id');
     }
 
     public function department()
     {
         return $this->belongsTo(Department::class);
+    }
+
+    public function cv()
+    {
+        return $this->hasOne(CV::class);
     }
 
     public function getRoleListAttribute()
@@ -75,7 +80,7 @@ class User extends Authenticatable
 
     public function getMediaUrlAttribute()
     {
-        $media = $this->mediatable;
+        $media = $this->media;
         return $media;
     }
 }

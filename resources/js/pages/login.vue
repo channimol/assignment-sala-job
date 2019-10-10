@@ -72,8 +72,8 @@ export default {
             if (this.$v.$invalid) return;
             const data = {
                 grant_type: "password",
-                client_secret: "XHIa391bUR1sfcvKCngCTyUmutTm2yHCHcSq9lOT",
-                client_id: 1,
+                client_secret: "1HBtMckK19B8Fvkic9ANSWIUbwjICySXYixY0ArP",
+                client_id: 2,
                 username: this.email,
                 password: this.password
             };

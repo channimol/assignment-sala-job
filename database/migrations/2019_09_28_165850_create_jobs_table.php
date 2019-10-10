@@ -24,7 +24,7 @@ class CreateJobsTable extends Migration
             $table->integer('department_id')->nullable();
             $table->integer('published_by');
             $table->string('contact_email');
-            $table->string('contact_number');
+            $table->string('contact_number')->nullable();
 
             $table->foreign('department_id')
                 ->references('id')
