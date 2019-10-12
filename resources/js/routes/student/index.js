@@ -1,10 +1,10 @@
 import FrontEndLayout from '@/js/layouts/primary'
-import FrontEndIndex from '@/js/frontend/pages/index.vue'
+import FrontEndIndex from '@/js/pages/frontend/index.vue'
 
 export const StudentRoutes = {
-    path: '/home',
+    path: '/',
     component: FrontEndLayout,
     children: [
-        { path: '', component: FrontEndIndex },
+        { name: 'home', path: '', component: FrontEndIndex },
     ]
 }

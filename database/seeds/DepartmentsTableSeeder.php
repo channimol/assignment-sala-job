@@ -18,6 +18,12 @@ class DepartmentsTableSeeder extends Seeder
             array(
                 'name' => 'Infomation and Communication Technology',
             ),
+            array(
+                'name' => 'Health and Science',
+            ),
+            array(
+                'name' => 'Food and Chemical Industry',
+            ),
         );
 
         DB::table('departments')->truncate();

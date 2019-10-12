@@ -20,6 +20,13 @@ Route::middleware('auth:api')->group(function () {
         require(__DIR__ . '/backend/user.php');
     });
 
+    Route::group(['prefix' => 'student', 'as' => 'student.'], function () {
+        require(__DIR__ . '/student/job.php');
+        require(__DIR__ . '/student/user.php');
+    });
+
+
     Route::get('/user', 'Api\UserController@getUserInformation')->name('user-info');
-    Route::get('/user/cvs', 'Api\Student\ProfileController@index')->name('user-cv');
+    Route::get('/departments', 'Api\DepartmentController@index')->name('departments');
+    Route::get('/logout', 'Api\UserController@logout')->name('logout');
 });

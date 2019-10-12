@@ -4,7 +4,8 @@
             <admin-sidebar></admin-sidebar>
         </v-navigation-drawer>
 
-        <v-app-bar app clipped-left>
+        <v-app-bar app clipped-left dark color="primary">
+            <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
             <v-toolbar-title>SALA JOB</v-toolbar-title>
         </v-app-bar>
 

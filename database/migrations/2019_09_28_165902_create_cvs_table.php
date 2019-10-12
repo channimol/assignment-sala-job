@@ -16,13 +16,13 @@ class CreateCvsTable extends Migration
         Schema::create('cvs', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id');
-            $table->text('description');
+            $table->text('description')->nullable();
 
             $table->foreign('user_id')
                 ->references('id')
                 ->on('users')
                 ->onDeleted('CASCADE');
-                
+
             $table->timestamps();
         });
     }

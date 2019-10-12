@@ -22,8 +22,8 @@ const router = new VueRouter({
                     name: 'login',
                     component: LoginPage,
                 },
-            ]
-        },
+            ],
+        }
         // {
         //     path: '*',
         //     name: '404',
@@ -33,6 +33,33 @@ const router = new VueRouter({
     ]
 })
 
+
+router.beforeEach((to, from, next) => {
+    console.log(' TO ==', to.path)
+    console.log(' FROM ==', from.path)
+    const user = window.$cookies.get('user')
+    const adminRoute = to.matched.some(record => record.meta.requireAdmin)
+    console.log(to)
+    if (user) {
+        const isStudent = user.roles.includes("student")
+        const isAdmin = user.roles.includes("admin")
+        const isPublisher = user.roles.includes("publisher")
+        console.log('have user', to.name == 'login')
+        if (isAdmin && (to.name == 'login' || !adminRoute)) {
+            next('/admin')
+        } else if ((isStudent || isPublisher) && (to.name == 'login' || adminRoute)) {
+            next({ name: 'home' })
+        } else {
+            next()
+        }
+    } else {
+        if (to.name !== 'login') {
+            next({ name: 'login' })
+        } else {
+            next()
+        }
+    }
+})
 
 
 export default router

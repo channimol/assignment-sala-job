@@ -12,4 +12,7 @@ class ProfileController extends Controller
     {
         return Auth::user();
     }
+
+    public function cv()
+    { }
 }

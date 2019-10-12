@@ -11,7 +11,11 @@ export const AdminRoutes = {
         { name: 'admin-list-jobs', path: 'jobs', component: AdminJobPost },
         { name: 'admin-create-job', path: 'jobs/create', component: AdminJobPostCreate },
         // { name: 'admin-edit-job', path: 'jobs/edit', component: AdminJobPost },
-    ]
+    ],
+    meta: {
+        requireAdmin: true
+    }
+
 }
 
 

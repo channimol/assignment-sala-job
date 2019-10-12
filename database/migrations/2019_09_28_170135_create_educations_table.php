@@ -22,13 +22,13 @@ class CreateEducationsTable extends Migration
             $table->string('grade')->nullable();
             $table->dateTime('start_year');
             $table->dateTime('end_year');
-            $table->text('description');
-            $table->text('references'); //link or information related to position
-            
+            $table->text('description')->nullable();
+            $table->text('references')->nullable(); //link or information related to position
+
             $table->foreign('cv_id')
                 ->references('id')
                 ->on('cvs');
-            
+
             $table->timestamps();
         });
     }

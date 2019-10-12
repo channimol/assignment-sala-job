@@ -7,7 +7,16 @@
 </template>
 
 <script>
-export default {};
+export default {
+    data: () => ({
+        user: null
+    }),
+    methods: {
+        redirectPage() {
+            this.$cookies.get("");
+        }
+    }
+};
 </script>
 
 <style lang="scss" scoped>
