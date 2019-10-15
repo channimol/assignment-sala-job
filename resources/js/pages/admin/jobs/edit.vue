@@ -20,22 +20,15 @@
                                 required
                                 outlined
                             ></v-text-field>
-                            {{typeof title}}
-                            <label
-                                class="text-capitalize font-weight-bold"
-                            >Description</label>
+                            <label class="text-capitalize font-weight-bold">Description</label>
                             <v-textarea outlined name="input-7-4" v-model="description"></v-textarea>
-                            {{typeof description}}
-                            <label
-                                class="text-capitalize font-weight-bold"
-                            >Requirement</label>
+                            <label class="text-capitalize font-weight-bold">Requirement</label>
                             <ckeditor
                                 :editor="editor"
                                 :config="editorConfig"
                                 v-model="requirement"
                                 @input="onEditorInput"
                             ></ckeditor>
-                            {{typeof requirement}}
                             <v-row>
                                 <v-col>
                                     <label class="text-capitalize font-weight-bold">Contact Email</label>
@@ -46,7 +39,6 @@
                                         required
                                         outlined
                                     ></v-text-field>
-                                    {{typeof email}}
                                 </v-col>
                                 <v-col>
                                     <label class="text-capitalize font-weight-bold">Contact Number</label>
@@ -56,7 +48,6 @@
                                         required
                                         outlined
                                     ></v-text-field>
-                                    {{typeof phone}}
                                 </v-col>
                             </v-row>
                             <v-row>
@@ -70,7 +61,6 @@
                                         required
                                         outlined
                                     ></v-select>
-                                    {{typeof source}}
                                 </v-col>
                                 <v-col>
                                     <label class="text-capitalize font-weight-bold">Department</label>
@@ -82,7 +72,6 @@
                                         required
                                         outlined
                                     ></v-select>
-                                    {{typeof department}}
                                 </v-col>
                                 <v-col>
                                     <label class="text-capitalize font-weight-bold">Schedule Types</label>
@@ -94,7 +83,6 @@
                                         required
                                         outlined
                                     ></v-select>
-                                    {{typeof schedule}}
                                 </v-col>
                                 <v-col>
                                     <label class="text-capitalize font-weight-bold">Salary</label>
@@ -104,7 +92,6 @@
                                         type="number"
                                         prefix="$"
                                     ></v-text-field>
-                                    {{typeof salary}}
                                 </v-col>
                             </v-row>
                         </template>
@@ -246,19 +233,14 @@ export default {
             let user = this.$cookies.get("user");
             let oldImageIds = [];
             this.convertValueType();
-            // if (this.$v.$invalid) return;
+            if (this.$v.$invalid) return;
             let formData = new FormData();
-            console.log(
-                "this.$refs.myVueDropzone.dropzone.files.length",
-                this.$refs.myVueDropzone.dropzone.files
-            );
             for (
                 let i = 0;
                 i < this.$refs.myVueDropzone.dropzone.files.length;
                 i++
             ) {
                 let record = this.$refs.myVueDropzone.dropzone.files[i];
-                console.log("why,", record);
                 if (record.hasOwnProperty("id")) {
                     oldImageIds.push(record.id);
                 } else {

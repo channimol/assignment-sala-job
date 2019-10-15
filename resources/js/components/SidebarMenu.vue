@@ -1,5 +1,43 @@
 <template>
-    <v-list dense>
+    <v-list>
+        <template v-for="item in menu">
+            <v-list-group
+                :key="item.text"
+                v-if="item.children"
+                :prepend-icon="item.icon"
+                :append-icon="item.model ? item['icon-append-up'] : item['icon-append-down']"
+                no-action
+            >
+                <template v-slot:activator>
+                    <v-list-item-content>
+                        <v-list-item-title v-text="item.text"></v-list-item-title>
+                    </v-list-item-content>
+                </template>
+
+                <v-list-item
+                    v-for="subItem in item.children"
+                    :key="subItem.text"
+                    @click="redirectRouteName(subItem.nameUrl)"
+                >
+                    <v-list-item-title
+                        v-text="subItem.text"
+                        :class="{
+                    'primary--text': $route.name == subItem.nameUrl
+                }"
+                    ></v-list-item-title>
+                    <v-list-item-icon>
+                        <v-icon
+                            v-text="subItem.icon"
+                            color="primary"
+                            v-if="$route.name == subItem.nameUrl"
+                        ></v-icon>
+                        <v-icon v-else v-text="subItem.icon"></v-icon>
+                    </v-list-item-icon>
+                </v-list-item>
+            </v-list-group>
+        </template>
+    </v-list>
+    <!-- <v-list dense>
         <template v-for="item in menu">
             <v-list-group
                 v-if="item.children"
@@ -45,7 +83,7 @@
                 </v-list-item-content>
             </v-list-item>
         </template>
-    </v-list>
+    </v-list>-->
 </template>
 
 <script>
@@ -60,7 +98,18 @@ export default {
     },
     mixins: [auth],
     data() {
-        return {};
+        return {
+            admins: [
+                ["Management", "people_outline"],
+                ["Settings", "settings"]
+            ],
+            cruds: [
+                ["Create", "add"],
+                ["Read", "insert_drive_file"],
+                ["Update", "update"],
+                ["Delete", "delete"]
+            ]
+        };
     },
     methods: {}
 };

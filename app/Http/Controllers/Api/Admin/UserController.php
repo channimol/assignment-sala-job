@@ -40,12 +40,14 @@ class UserController extends Controller
                 "user_id" => $user->id,
                 "description" => ""
             ]);
+            // if (isset($request->roles)) {
             $user->syncRoles($request->roles);
+            // }
 
-            if (count($user->roles) == 0) {
-                $role_student = Role::select('name')->where('name', 'student')->first();
-                $user->syncRoles($role_student->name);
-            }
+            // if (count($user->roles) == 0) {
+            //     $role_student = Role::select('name')->where('name', 'student')->first();
+            //     $user->syncRoles($role_student->name);
+            // }
 
             if ($request->hasfile('photo')) {
                 $this->uploadFile($user, $request);
@@ -103,7 +105,7 @@ class UserController extends Controller
     {
 
         $users = User::whereHas('roles', function ($q) {
-            $q->where('name', '!=', 'administrator');
+            $q->where('name', '!=', 'admin');
         })->with('roles', 'department', 'media', 'cv')->get();
 
         return $users;

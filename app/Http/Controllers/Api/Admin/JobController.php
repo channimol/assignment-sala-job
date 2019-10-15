@@ -137,7 +137,8 @@ class JobController extends Controller
         $source_types = [1 => 'Internal', 2 => 'External'];
         $schedule_types = [1 => 'Full Time', 2 => 'Part Time', 3 => 'Internship'];
         $user = Auth::user()->id;
-        $jobs = Job::where('published_by', $user)->with('publisher', 'medias')->get();
+        // $jobs = Job::where('published_by', $user)->with('publisher', 'medias')->get();
+        $jobs = Job::with('publisher', 'medias')->get();
         foreach ($jobs as $job) {
             if ($job->job_source_id) {
                 $job->job_source_id = $source_types[$job->job_source_id];

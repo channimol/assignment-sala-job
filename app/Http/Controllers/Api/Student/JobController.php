@@ -32,7 +32,19 @@ class JobController extends Controller
 
     public function index()
     {
+        $source_types = [1 => 'Internal', 2 => 'External'];
+        $schedule_types = [1 => 'Full Time', 2 => 'Part Time', 3 => 'Internship'];
         $jobs = Job::with('medias', 'publisher')->get();
+        foreach ($jobs as $job) {
+            if ($job->job_source_id) {
+                $job->job_source_id = $source_types[$job->job_source_id];
+            }
+            if ($job->schedule_type_id) {
+                $job->schedule_type_id = $schedule_types[$job->schedule_type_id];
+            }
+            $job->published_by = $job->publisher->email;
+        }
+        return $jobs;
         return $jobs;
     }
 }

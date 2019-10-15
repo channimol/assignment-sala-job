@@ -14,11 +14,21 @@ export default {
             items: [
                 {
                     icon: "post_add",
-                    text: "Job Post",
-                    nameUrl: "admin-list-jobs"
+                    text: "Jobs",
+                    "icon-append-up": "keyboard_arrow_up",
+                    "icon-append-down": "keyboard_arrow_down",
+                    model: false,
+                    children: [
+                        {
+                            icon: "post_add",
+                            text: "Posts",
+                            nameUrl: "admin-list-jobs",
+                            icon: "work"
+                        }
+                    ]
                 },
                 {
-                    icon: "folder",
+                    icon: "mdi-account-multiple",
                     "icon-append-up": "keyboard_arrow_up",
                     "icon-append-down": "keyboard_arrow_down",
                     text: "Management",

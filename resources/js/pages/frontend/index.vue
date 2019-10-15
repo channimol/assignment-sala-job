@@ -49,12 +49,17 @@
                         <v-col :key="i" cols="12" md="6">
                             <v-hover v-slot:default="{ hover }">
                                 <job-card
-                                    hover
+                                    :hover="hover"
                                     :header="item.title"
-                                    :chipText="item.schedule_type"
+                                    :chipText="item.schedule_type_id"
                                     :description="item.description"
                                     :author="item.published_by"
-                                ></job-card>
+                                >
+                                    <div slot="action" class>
+                                        <v-btn color="primary" text>bookmark</v-btn>
+                                        <v-btn color="primary" text>apply</v-btn>
+                                    </div>
+                                </job-card>
                             </v-hover>
                         </v-col>
                     </template>
@@ -86,18 +91,20 @@ export default {
         ],
         jobs: []
     }),
-    mounted() {},
+    mounted() {
+        this.requestingData();
+    },
     methods: {
         requestingData() {
             axios
                 .all([
                     axios.get("/api/departments"),
-                    axios.get("/api/students/jobs/list")
+                    axios.get("/api/student/jobs/list")
                 ])
                 .then(
                     axios.spread((departments, joblists) => {
-                        this.departments = departments.data.data;
-                        this.jobs = joblists.data.data;
+                        this.departments = departments.data;
+                        this.jobs = joblists.data;
                     })
                 );
         }

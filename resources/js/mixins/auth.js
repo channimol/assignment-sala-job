@@ -9,11 +9,12 @@ export default {
             this.$router.push({ name: 'login' })
         },
         redirectRouteName(name) {
+            console.log('name', name)
             if (name == "login") {
                 this.logout();
                 return;
             }
-            this.$router.push({ name: url });
+            this.$router.push({ name: name });
         }
     }
 }

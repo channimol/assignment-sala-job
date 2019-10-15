@@ -125,11 +125,7 @@ export default {
         source: null,
         sourceTypes: [{ id: 1, name: "Internal" }, { id: 2, name: "External" }],
         department: null,
-        departments: [
-            // { id: 1, name: "Full Time" },
-            // { id: 2, name: "Part Time" },
-            // { id: 3, name: "Internship" }
-        ],
+        departments: [],
         schedule: null,
         scheduleTypes: [
             { id: 1, name: "Full Time" },

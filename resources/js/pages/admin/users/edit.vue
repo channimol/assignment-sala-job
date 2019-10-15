@@ -6,7 +6,7 @@
         <v-card class="d-block mt-3" outlined>
             <v-card>
                 <v-card-title>
-                    Create New User
+                    Edit User
                     <div class="flex-grow-1"></div>
                 </v-card-title>
                 <v-card-text>
@@ -79,12 +79,11 @@
                                 <label class="text-capitalize font-weight-bold">Password</label>
                                 <v-text-field
                                     v-model="password"
-                                    :error-messages="passwordErrors"
                                     placeholder="Password"
-                                    required
                                     outlined
-                                    @input="$v.password.$touch()"
-                                    @blur="$v.password.$touch()"
+                                    type="password"
+                                    disabled
+                                    style="cursor-pointer: not-allowed"
                                 ></v-text-field>
                             </v-col>
                             <v-col>
@@ -131,7 +130,6 @@ export default {
         first_name: { required, minLength: minLength(2) },
         last_name: { required, minLength: minLength(2) },
         email: { required, email },
-        password: { required, minLength: minLength(3) },
         role: { required }
     },
 
@@ -153,13 +151,6 @@ export default {
     }),
 
     computed: {
-        passwordErrors() {
-            const errors = [];
-            if (!this.$v.password.$dirty) return errors;
-            !this.$v.password.minLength &&
-                errors.push("Password must be at least 3 characters");
-            return errors;
-        },
         roleErrors() {
             const errors = [];
             if (!this.$v.role.$dirty) return errors;
@@ -194,26 +185,57 @@ export default {
     },
     mounted() {
         this.getDepartments();
+        this.getUserDetail();
     },
     methods: {
         async getDepartments() {
             const departments = await axios.get("/api/departments");
             this.departments = departments.data;
         },
+        async getUserDetail() {
+            const userId = this.$route.params.id;
+            const user = await axios.get(`api/admin/users/${userId}`);
+            console.log("user", user);
+            this.first_name = user.data.first_name;
+            this.last_name = user.data.last_name;
+            this.email = user.data.email;
+            this.password = user.data.password;
+            if (user.data.role_list) {
+                const role = this.roles.find(
+                    item => item.name.toLowerCase() == user.data.role_list[0]
+                );
+                this.role = role.id;
+            }
+            if (user.data.gender_id) {
+                const gender = this.departments.find(
+                    item => item.id == user.data.gender_id
+                );
+                this.gender = gender.id;
+            }
+            if (user.data.department_id) {
+                const department = this.departments.find(
+                    item => item.id == user.data.department_id
+                );
+                this.department = department.id;
+            }
+        },
         async submit() {
             this.$v.$touch();
             let user = this.$cookies.get("user");
+            const userId = this.$route.params.id;
             this.convertValueType();
             let data = {
                 first_name: this.first_name,
                 last_name: this.last_name,
                 gender_id: this.gender,
                 email: this.email,
-                password: this.password,
                 roles: this.role,
                 department_id: this.department
             };
-            const store = await axios.post("/api/admin/users/create", data);
+            const store = await axios.post(
+                `/api/admin/users/update/${userId}`,
+                data
+            );
             console.log("store result", store);
         },
         convertValueType() {
