@@ -29,4 +29,5 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/user', 'Api\UserController@getUserInformation')->name('user-info');
     Route::get('/departments', 'Api\DepartmentController@index')->name('departments');
     Route::get('/logout', 'Api\UserController@logout')->name('logout');
+    Route::get('/upload', 'Api\UploadController@upload')->name('upload');
 });

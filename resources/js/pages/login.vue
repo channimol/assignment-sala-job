@@ -104,6 +104,7 @@ export default {
             await axios.get("api/user").then(res => {
                 const roles = res.data.role_list;
                 const user = {
+                    id: res.data.id,
                     email: res.data.email,
                     roles: roles,
                     firstName: res.data.first_name,

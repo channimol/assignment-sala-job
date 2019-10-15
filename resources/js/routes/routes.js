@@ -41,6 +41,7 @@ router.beforeEach((to, from, next) => {
     const adminRoute = to.matched.some(record => record.meta.requireAdmin)
     console.log(to)
     if (user) {
+        console.log('user ====', user)
         const isStudent = user.roles.includes("student")
         const isAdmin = user.roles.includes("admin")
         const isPublisher = user.roles.includes("publisher")

@@ -32,7 +32,7 @@ class JobController extends Controller
 
     public function index()
     {
-        $jobs = Job::all();
+        $jobs = Job::with('medias', 'publisher')->get();
         return $jobs;
     }
 }

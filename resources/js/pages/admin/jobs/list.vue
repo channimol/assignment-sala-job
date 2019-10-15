@@ -19,13 +19,19 @@
                 </v-card-title>
                 <v-data-table :headers="headers" :items="list" :search="search">
                     <template v-slot:item.actions="{ item }">
-                        <v-btn class="info" @click="view(item)">
+                        <v-btn
+                            class="info"
+                            @click="$router.push({name: 'admin-view-job', params: {id: item.id}})"
+                        >
                             <v-icon>visibility</v-icon>
                         </v-btn>
-                        <v-btn class="primary">
+                        <v-btn
+                            class="primary"
+                            @click="$router.push({name: 'admin-edit-job', params: {id: item.id}})"
+                        >
                             <v-icon>edit</v-icon>
                         </v-btn>
-                        <v-btn class="error">
+                        <v-btn class="error" @click="remove(item)">
                             <v-icon>delete</v-icon>
                         </v-btn>
                     </template>
@@ -65,8 +71,12 @@ export default {
         this.getListJobs();
     },
     methods: {
-        view(item) {
-            console.log("item", item);
+        remove(item) {
+            const removeIndex = this.list.indexOf(item);
+            axios.post(`api/admin/jobs/delete/${item.id}`).then(res => {
+                console.log("getJobList", res);
+                this.list.splice(removeIndex, 1);
+            });
         },
         getListJobs() {
             axios.get("api/admin/jobs/list").then(res => {
