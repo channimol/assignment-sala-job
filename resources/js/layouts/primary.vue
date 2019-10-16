@@ -44,7 +44,7 @@ export default {
                         },
                         {
                             text: "Settings",
-                            nameUrl: "setting"
+                            nameUrl: "settings"
                         },
                         {
                             text: "Logout",

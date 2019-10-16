@@ -23,11 +23,11 @@ class CreateWorkExperiencesTable extends Migration
             $table->dateTime('end_date');
             $table->text('description');
             $table->text('references'); //link or information related to position
-            
+
             $table->foreign('cv_id')
                 ->references('id')
                 ->on('cvs');
-            
+
             $table->timestamps();
         });
     }

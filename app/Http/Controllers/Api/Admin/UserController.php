@@ -36,14 +36,17 @@ class UserController extends Controller
 
             $request['password'] = bcrypt($request->password);
             $user = User::create($request->except(['photo']));
-            CV::create([
-                "user_id" => $user->id,
-                "description" => ""
-            ]);
+
             // if (isset($request->roles)) {
             $user->syncRoles($request->roles);
             // }
-
+            $user_roles = $user->getRoleNames();
+            if ($user_roles[0] == 'student') {
+                CV::create([
+                    "user_id" => $user->id,
+                    "description" => User
+                ]);
+            }
             // if (count($user->roles) == 0) {
             //     $role_student = Role::select('name')->where('name', 'student')->first();
             //     $user->syncRoles($role_student->name);
@@ -63,7 +66,7 @@ class UserController extends Controller
     {
         $file = $request->photo;
         $original_extension = $request->file('photo')->getClientOriginalExtension();
-        $filename = time() . '.' . $original_extension;
+        $filename = time() . '' . uniqid(rand()) . '.' . $original_extension;
         $storePath = "images/users/$filename";
         $contents = File::get($file);
         Storage::disk('public')->put($storePath, $contents);

@@ -11,7 +11,7 @@ trait UploadFileTrait
     public function uploadFileWithMedia($classType, $classId, $folderName, $file)
     {
         $original_extension = $file->getClientOriginalExtension();
-        $filename = time() . '.' . $original_extension;
+        $filename = time() . '' . uniqid(rand()) . '.' . $original_extension;
         $storePath = "images/" . $folderName . '/' . $filename;
         $contents = File::get($file);
         Storage::disk('public')->put($storePath, $contents);
