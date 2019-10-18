@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class AppliedJob extends Model
 {
     protected $table = 'applied_jobs';
+    protected $fillable = ['job_id', 'user_id', 'status'];
 
-    protected $fillable = ['job_id', 'user_id', 'status']
+    // public fuction user
 }

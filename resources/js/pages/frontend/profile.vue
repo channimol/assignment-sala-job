@@ -1,30 +1,25 @@
 <template>
     <v-container>
         <v-card class="mx-auto">
-            <v-row>
-                <v-col cols="3">
-                    <v-avatar>
-                        <v-img v-if="user.photo" src="https://cdn.vuetifyjs.com/images/john.jpg"></v-img>
-                        <!-- <v-img :src="'/images/placeholder-user.png'" width="300"></v-img> -->
-                    </v-avatar>
-
+            <v-row v-if="user">
+                <v-col cols="3" class="pl-5">
+                    <!-- <v-avatar> -->
+                    <v-img v-if="user.media_url" :src="user.media_url"></v-img>
+                    <v-img v-else :src="'/images/placeholder-user.png'"></v-img>
+                    <!-- </v-avatar> -->
                     <v-list>
-                        <template v-for="(item, key) in sidebar">
-                            <!-- <v-divider v-if="item.divider" :key="i"></v-divider> -->
-                            <v-list-item :key="key" @click>
-                                <!-- <v-list-item-action>
-                                    <v-icon>{{ item.icon }}</v-icon>
-                                </v-list-item-action>-->
+                        <v-list-item-group v-model="show">
+                            <v-list-item v-for="(item, key) in sidebar" :key="key">
                                 <v-list-item-title>{{ item.name }}</v-list-item-title>
                             </v-list-item>
-                        </template>
+                        </v-list-item-group>
                     </v-list>
                 </v-col>
-                <v-col cols="8">
-                    <BasicInformation v-if="show==1"></BasicInformation>
-                    <WorkExperience></WorkExperience>
-                    <Skill></Skill>
-                    <Language></Language>
+                <v-col cols="9">
+                    <BasicInformation v-if="show==0" :user="user"></BasicInformation>
+                    <WorkExperience :user="user"></WorkExperience>
+                    <Skill :user="user"></Skill>
+                    <Language :user="user"></Language>
                 </v-col>
             </v-row>
         </v-card>
@@ -32,7 +27,7 @@
 </template>
 
 <script>
-import BasicInformation from "./student-profile/basic-information";
+import BasicInformation from "./student-profile/basic-Infomation/index";
 import Skill from "./student-profile/skill";
 import Language from "./student-profile/language";
 import WorkExperience from "./student-profile/work-experience";
@@ -53,15 +48,16 @@ export default {
                 { id: 3, name: "Skill" },
                 { id: 4, name: "Language" }
             ],
-            show: 1
+            show: 0
         };
     },
     mounted() {
         this.getUserInfo();
     },
     methods: {
-        getUserInfo() {
-            // const user = axios('')
+        async getUserInfo() {
+            const user = await axios("api/student/user/profile");
+            this.user = user.data;
         }
     }
 };

@@ -5,6 +5,8 @@ Route::group(['prefix' => 'user', 'as' => 'user.'], function () {
     Route::get('/cv', 'Api\Student\ProfileController@cv')->name('user-cv');
     Route::get('/profile', 'Api\Student\ProfileController@index')->name('user-profile');
 
+    Route::post('/upload-cv', 'Api\Student\ProfileController@uploadCV')->name('user-upload-cv');
+
     Route::post('/update-experience', 'Api\Student\ProfileController@updateWorkExperience')->name('user-experience');
 
     Route::post('/update-basic-info', 'Api\Student\ProfileController@updateBasicInformation')->name('user-info');

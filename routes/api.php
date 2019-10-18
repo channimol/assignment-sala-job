@@ -1,5 +1,6 @@
 <?php
 
+use App\Mail\SendMail;
 use Illuminate\Http\Request;
 
 /*
@@ -31,4 +32,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/languages', 'Api\LanguageController@index')->name('languages');
     Route::get('/logout', 'Api\UserController@logout')->name('logout');
     Route::get('/upload', 'Api\UploadController@upload')->name('upload');
+
+
+    Route::post('/job/apply/send', 'Api\SendMailController@SendMail')->name('send-email');
 });

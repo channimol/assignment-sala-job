@@ -1,7 +1,21 @@
 <template>
     <v-container>
         <v-row>
-            <v-col cols="3">
+            <v-col class="col-6 offset-6">
+                {{query}}
+                <v-text-field
+                    solo
+                    clearable
+                    v-model="query"
+                    label="Search"
+                    append-icon="search"
+                    placeholder="Search Job Title"
+                    @change="search"
+                ></v-text-field>
+            </v-col>
+        </v-row>
+        <v-row>
+            <!-- <v-col cols="3">
                 <v-card class="mt-3 px-8 py-10">
                     <div class="filter-block">
                         <div class="filter-content">
@@ -42,11 +56,11 @@
                         </div>
                     </div>
                 </v-card>
-            </v-col>
-            <v-col cols="9">
+            </v-col>-->
+            <v-col v-if="jobs.length > 0">
                 <v-row class="fill-height">
                     <template v-for="(item, i) in jobs">
-                        <v-col :key="i" cols="12" md="6">
+                        <v-col :key="i" cols="12" md="4" sm="6">
                             <v-hover v-slot:default="{ hover }">
                                 <job-card
                                     :hover="hover"
@@ -56,15 +70,63 @@
                                     :author="item.published_by"
                                 >
                                     <div slot="action" class>
-                                        <v-btn color="primary" text>bookmark</v-btn>
-                                        <v-btn color="primary" text>apply</v-btn>
+                                        <v-btn color="primary" text @click="bookmark(item)">bookmark</v-btn>
+                                        <v-btn color="primary" text @click="openModal = true">apply</v-btn>
                                     </div>
+                                    <v-dialog v-model="openModal" persistent max-width="290">
+                                        <v-card>
+                                            <v-card-title class="headline">Choose Option</v-card-title>
+                                            <v-card-text>Are you going to apply using your Profile as cv or upload a cv file?</v-card-text>
+                                            <div v-if="uploadModal" class="p-8">
+                                                <v-file-input
+                                                    label="File input"
+                                                    accept="application/pdf"
+                                                    @change="handleFile"
+                                                ></v-file-input>
+                                                <v-card-actions>
+                                                    <v-spacer></v-spacer>
+                                                    <v-btn
+                                                        color="green darken-1"
+                                                        text
+                                                        @click="upload()"
+                                                    >Upload</v-btn>
+                                                </v-card-actions>
+                                            </div>
+                                            <v-card-actions v-else>
+                                                <v-spacer></v-spacer>
+                                                <v-btn
+                                                    color="green darken-1"
+                                                    text
+                                                    @click="apply(item, 'cv')"
+                                                >Upload</v-btn>
+                                                <v-btn
+                                                    color="green darken-1"
+                                                    text
+                                                    @click="apply(item, 'profile')"
+                                                >Profile</v-btn>
+                                            </v-card-actions>
+                                            <v-card-actions v-else>
+                                                <v-btn
+                                                    color="green darken-1"
+                                                    text
+                                                    @click="upload()"
+                                                ></v-btn>
+                                            </v-card-actions>
+                                        </v-card>
+                                    </v-dialog>
                                 </job-card>
                             </v-hover>
                         </v-col>
                     </template>
                 </v-row>
+                <v-pagination
+                    v-model="page"
+                    class="my-4"
+                    :length="totalPage"
+                    @input="search($event)"
+                ></v-pagination>
             </v-col>
+            <v-banner single-line v-else width="100%">No Matching Result</v-banner>
         </v-row>
     </v-container>
 </template>
@@ -89,7 +151,12 @@ export default {
             { id: 2, name: "Part Time" },
             { id: 3, name: "Internship" }
         ],
-        jobs: []
+        jobs: [],
+        page: 1,
+        totalPage: 1,
+        query: "",
+        openModal: false,
+        uploadModal: false
     }),
     mounted() {
         this.requestingData();
@@ -104,18 +171,45 @@ export default {
                 .then(
                     axios.spread((departments, joblists) => {
                         this.departments = departments.data;
-                        this.jobs = joblists.data;
+                        this.jobs = joblists.data.data;
+                        this.totalPage = joblists.data.last_page;
                     })
                 );
-        }
-        // async getDepartments() {
-        //     const departments = await axios.get("/api/departments");
-        //     this.departments = departments.data.data;
-        // },
-        // async getJobsList() {
-        //     const list = await axios.get("/api/students/jobs/list");
-        //     this.jobs = list.data.data;
-        // }
+        },
+        search(page) {
+            if (typeof page === "undefined") {
+                page = 1;
+            }
+
+            axios
+                .get(`/api/student/jobs/list?search=${this.query}&page=${page}`)
+                .then(response => {
+                    console.log("first then ", response);
+                    this.jobs = response.data.data;
+                });
+        },
+        bookmark(job) {
+            const data = {
+                job_id: job.id
+            };
+            const bookmark = axios.post(`api/student/jobs/bookmark`, data);
+        },
+
+        apply(job, choice) {
+            const data = {
+                job_id: job.id,
+                apply_with: choice
+            };
+            if (choice == "cv") {
+                this.uploadModal = true;
+            }
+            // axios.post(`api/student/jobs/apply`, data);
+        },
+        handleFile(event) {
+            console.log("file uplaod", event);
+            // axios.post(a)
+        },
+        upload() {}
     }
 };
 </script>

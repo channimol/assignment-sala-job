@@ -22,17 +22,29 @@ class ProfileController extends Controller
 
     public function uploadCV(Request $request)
     {
-        $file = $request->file;
-        $original_extension = $file->getClientOriginalExtension();
-        $filename = time() . '' . uniqid(rand()) . '.' . $original_extension;
-        $storePath = "file/cv/$filename";
-        $contents = File::get($file);
-        Storage::disk('public')->put($storePath, $contents);
-        Media::create([
-            "mediable_type" => CV::class,
-            "mediable_id" => Auth::user()->id,
-            "url" => asset(Storage::url($storePath))
-        ]);
+        try {
+            $file = $request->file;
+            $original_extension = $file->getClientOriginalExtension();
+            $filename = time() . '' . uniqid(rand()) . '.' . $original_extension;
+            $storePath = "file/cv/$filename";
+            $contents = File::get($file);
+            Storage::disk('public')->put($storePath, $contents);
+            Media::create([
+                "mediable_type" => CV::class,
+                "mediable_id" => Auth::user()->id,
+                "url" => asset(Storage::url($storePath))
+            ]);
+            return response()->json([
+                'success' => true,
+                'message' => 'success upload file'
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'could not upload file',
+                'error' => $e->getMessage()
+            ]);
+        }
     }
 
     public function updateWorkExperience(Request $request)
@@ -259,12 +271,7 @@ class ProfileController extends Controller
     public function removeLanguage($id)
     {
         try {
-            $cv = Auth::user()->cv;
-            $cv->languages()->detach($id);
-            return response()->json([
-                'success' => true,
-                'message' => 'success delete user language',
-            ]);
+            $pdf = PDF::loadView('mails.mail', $data);
         } catch (Exception $e) {
             return response()->json([
                 'success' => false,

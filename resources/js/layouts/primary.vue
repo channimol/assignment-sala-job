@@ -29,11 +29,11 @@ export default {
             student: [
                 {
                     text: "Applied",
-                    nameUrl: "login"
+                    nameUrl: "apply"
                 },
                 {
                     text: "Bookmark",
-                    nameUrl: "login"
+                    nameUrl: "bookmark"
                 },
                 {
                     icon: "person",
