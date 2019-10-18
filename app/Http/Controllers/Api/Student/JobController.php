@@ -14,6 +14,7 @@ use App\Models\Media;
 use Exception;
 
 use PDF;
+use File;
 
 class JobController extends Controller
 {
@@ -34,8 +35,7 @@ class JobController extends Controller
                 ]);
             }
             $user = $request->user();
-            $cv = Media::where([['mediable_type', CV::class], ['mediable_id', $user->id]])->first();
-            // $apply = $user->applyJobs()->sync([$request->job_id], false);
+            $cv = Media::where([['mediable_type', 'App\Models\CV'], ['mediable_id', $user->id]])->first();
             $job = Job::find($request->job_id);
             if ($request->apply_with == 'cv') {
                 if (!$cv) {
@@ -43,6 +43,15 @@ class JobController extends Controller
                         'success' => false,
                         'message' => 'You need to upload cv file first',
                     ]);
+                } else {
+                    $data = array(
+                        'send_to' => $job->contact_email,
+                        'title' => $job->title,
+                        'attachments' => $cv->url,
+                        'isCV' => true,
+                        'student' => $user
+                    );
+                    $this->sendMail($data);
                 }
             } else {
                 $profile = User::with('cv.workExperiences', 'cv.skills', 'cv.languages')->find($user->id);
@@ -52,10 +61,12 @@ class JobController extends Controller
                     'send_to' => $job->contact_email,
                     'title' => $job->title,
                     'attachments' => $pdf->output(),
+                    'isCV' => false,
                     'student' => $user
                 );
                 $this->sendMail($data);
             }
+            $apply = $user->applyJobs()->sync([$request->job_id], false);
 
             return response()->json([
                 'success' => true,
@@ -78,6 +89,7 @@ class JobController extends Controller
 
     public function sendMail($data)
     {
+
         $to = $data["send_to"];
         $title = 'Apply for ' . $data["title"];
         Mail::to($to)

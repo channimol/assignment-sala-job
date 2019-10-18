@@ -1,6 +1,9 @@
 <template>
     <div>
         <h3>{{user.first_name}} {{user.last_name}}</h3>
+        <div class="mt-5">
+            <p>{{user.cv.description}}</p>
+        </div>
         <v-list>
             <v-row>
                 <v-subheader>Contact information</v-subheader>
@@ -46,7 +49,7 @@
                 </v-list-item-content>
             </v-list-item>
         </v-list>
-        <EditComponent :active="dialog" @close="dialog=false"></EditComponent>
+        <!-- <EditComponent :active="dialog" :user="user" @close="dialog=false"></EditComponent> -->
     </div>
 </template>
 

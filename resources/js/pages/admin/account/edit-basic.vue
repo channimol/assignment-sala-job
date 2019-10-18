@@ -81,12 +81,10 @@ export default {
         async update() {
             const data = {
                 email: this.user.email,
-                phone: this.user.phone,
-                address: this.user.address,
-                description: this.user.cv.description
+                phone: this.user.phone
             };
             const update = await axios.post(
-                "api/student/user/update-basic-info",
+                "api/admin/user/update-profile",
                 data
             );
             if (update.data.success) {

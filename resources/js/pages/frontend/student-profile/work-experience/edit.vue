@@ -9,14 +9,7 @@
                     <v-container v-if="user">
                         <v-row>
                             <v-col cols="12">
-                                <v-text-field
-                                    label="Email*"
-                                    v-model="user.email"
-                                    :error-messages="emailErrors"
-                                    placeholder="Enter Email"
-                                    required
-                                    outlined
-                                ></v-text-field>
+                                <v-date-picker v-model="picker"></v-date-picker>
                             </v-col>
                             <v-col cols="12">
                                 <v-text-field
@@ -65,6 +58,11 @@ export default {
         user: {
             email: { required, email }
         }
+    },
+    data() {
+        return {
+            picker: new Date().toISOString().substr(0, 10)
+        };
     },
     computed: {
         emailErrors() {

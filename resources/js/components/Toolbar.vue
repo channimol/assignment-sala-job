@@ -5,6 +5,9 @@
                 <template v-slot:activator="{ on }">
                     <v-btn v-on="on" color="primary" depressed>
                         <v-icon>{{item.icon}}</v-icon>
+                        <v-avatar size="28" v-if="profile">
+                            <img src="https://cdn.vuetifyjs.com/images/john.jpg" alt="John" />
+                        </v-avatar>
                     </v-btn>
                 </template>
                 <v-list>
@@ -26,7 +29,8 @@
 import auth from "./../mixins/auth";
 export default {
     props: {
-        toolbars: Array
+        toolbars: Array,
+        profile: String
     },
     mixins: [auth],
     data() {

@@ -2,7 +2,6 @@
     <v-container>
         <v-row>
             <v-col class="col-6 offset-6">
-                {{query}}
                 <v-text-field
                     solo
                     clearable
@@ -78,39 +77,47 @@
                                             <v-card-title class="headline">Choose Option</v-card-title>
                                             <v-card-text>Are you going to apply using your Profile as cv or upload a cv file?</v-card-text>
                                             <div v-if="uploadModal" class="p-8">
-                                                <v-file-input
-                                                    label="File input"
-                                                    accept="application/pdf"
-                                                    @change="handleFile"
-                                                ></v-file-input>
-                                                <v-card-actions>
-                                                    <v-spacer></v-spacer>
-                                                    <v-btn
-                                                        color="green darken-1"
-                                                        text
-                                                        @click="upload()"
-                                                    >Upload</v-btn>
-                                                </v-card-actions>
+                                                <div v-if="hasCv">
+                                                    <div class="ml-10">
+                                                        <a :href="hasCv" target="_blank">View CV</a>
+                                                    </div>
+                                                    <v-card-actions>
+                                                        <v-spacer></v-spacer>
+                                                        <v-btn
+                                                            color="green darken-1"
+                                                            text
+                                                            @click="apply(item, 'cv')"
+                                                        >Apply</v-btn>
+                                                    </v-card-actions>
+                                                </div>
+                                                <div v-else>
+                                                    <v-file-input
+                                                        label="File input"
+                                                        accept="application/pdf"
+                                                        @change="handleFile"
+                                                    ></v-file-input>
+                                                    <v-card-actions>
+                                                        <v-spacer></v-spacer>
+                                                        <v-btn
+                                                            color="green darken-1"
+                                                            text
+                                                            @click="upload()"
+                                                        >Upload</v-btn>
+                                                    </v-card-actions>
+                                                </div>
                                             </div>
                                             <v-card-actions v-else>
                                                 <v-spacer></v-spacer>
                                                 <v-btn
                                                     color="green darken-1"
                                                     text
-                                                    @click="apply(item, 'cv')"
-                                                >Upload</v-btn>
+                                                    @click="chooseOption(item, 'cv')"
+                                                >CV</v-btn>
                                                 <v-btn
                                                     color="green darken-1"
                                                     text
-                                                    @click="apply(item, 'profile')"
+                                                    @click="chooseOption(item, 'profile')"
                                                 >Profile</v-btn>
-                                            </v-card-actions>
-                                            <v-card-actions v-else>
-                                                <v-btn
-                                                    color="green darken-1"
-                                                    text
-                                                    @click="upload()"
-                                                ></v-btn>
                                             </v-card-actions>
                                         </v-card>
                                     </v-dialog>
@@ -156,7 +163,10 @@ export default {
         totalPage: 1,
         query: "",
         openModal: false,
-        uploadModal: false
+        uploadModal: false,
+        file: null,
+        hasCv: null,
+        viewCv: false
     }),
     mounted() {
         this.requestingData();
@@ -166,13 +176,15 @@ export default {
             axios
                 .all([
                     axios.get("/api/departments"),
-                    axios.get("/api/student/jobs/list")
+                    axios.get("/api/student/jobs/list"),
+                    axios.get("/api/student/user/profile")
                 ])
                 .then(
-                    axios.spread((departments, joblists) => {
+                    axios.spread((departments, joblists, user) => {
                         this.departments = departments.data;
                         this.jobs = joblists.data.data;
                         this.totalPage = joblists.data.last_page;
+                        this.hasCv = user.data.cv.media_url;
                     })
                 );
         },
@@ -194,22 +206,38 @@ export default {
             };
             const bookmark = axios.post(`api/student/jobs/bookmark`, data);
         },
-
-        apply(job, choice) {
+        async apply(job, choice) {
             const data = {
                 job_id: job.id,
                 apply_with: choice
             };
+            const apply = await axios.post(`api/student/jobs/apply`, data);
+            if (apply.data.success) {
+                this.openModal = false;
+                alert("success");
+            }
+        },
+        chooseOption(job, choice) {
             if (choice == "cv") {
                 this.uploadModal = true;
+                return;
             }
-            // axios.post(`api/student/jobs/apply`, data);
+            this.apply(job, choice);
         },
         handleFile(event) {
-            console.log("file uplaod", event);
-            // axios.post(a)
+            this.file = event;
         },
-        upload() {}
+        async upload() {
+            const formData = new FormData();
+            formData.append("file", this.file);
+            const upload = await axios.post(
+                `api/student/user/upload-cv`,
+                formData
+            );
+            if (upload.data.success) {
+                this.hasCv = upload.data.data;
+            }
+        }
     }
 };
 </script>

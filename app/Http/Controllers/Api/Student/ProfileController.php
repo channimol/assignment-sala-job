@@ -5,10 +5,16 @@ namespace App\Http\Controllers\Api\Student;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Experience;
+
 use Auth;
+use File;
+use Illuminate\Support\Facades\Storage;
+
 use App\Models\User;
 use App\Models\CV;
 use App\Models\Skill;
+use App\Models\Media;
+
 use Exception;
 
 class ProfileController extends Controller
@@ -16,27 +22,41 @@ class ProfileController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $profile = User::with('cv.workExperiences', 'cv.skills', 'cv.languages')->find($user->id);
+        $profile = User::with('cv.media', 'cv.workExperiences', 'cv.skills', 'cv.languages')->find($user->id);
         return $profile;
     }
 
     public function uploadCV(Request $request)
     {
         try {
+            $this->validate($request, [
+                'file' => 'required|mimetypes:application/pdf'
+            ]);
             $file = $request->file;
             $original_extension = $file->getClientOriginalExtension();
             $filename = time() . '' . uniqid(rand()) . '.' . $original_extension;
             $storePath = "file/cv/$filename";
             $contents = File::get($file);
             Storage::disk('public')->put($storePath, $contents);
-            Media::create([
-                "mediable_type" => CV::class,
-                "mediable_id" => Auth::user()->id,
-                "url" => asset(Storage::url($storePath))
-            ]);
+            $user = Auth::user();
+            $cv = Media::where([['mediable_type', CV::class], ['mediable_id', $user->id]])->first();
+            if ($cv) {
+                $cv->update([
+                    "mediable_type" => CV::class,
+                    "mediable_id" => $user->id,
+                    "url" => asset(Storage::url($storePath))
+                ]);
+            } else {
+                Media::create([
+                    "mediable_type" => CV::class,
+                    "mediable_id" => $user->id,
+                    "url" => asset(Storage::url($storePath))
+                ]);
+            }
             return response()->json([
+                'data' => asset(Storage::url($storePath)),
                 'success' => true,
-                'message' => 'success upload file'
+                'message' => 'success upload file',
             ]);
         } catch (Exception $e) {
             return response()->json([
@@ -130,7 +150,7 @@ class ProfileController extends Controller
             }
             if ($role[0] == 'student') {
                 $user = User::find(Auth::user()->id);
-                $info = $user->update([
+                $user->update([
                     'address' => $request->address,
                     'dob' => $request->dob,
                     'phone' => $request->phone,
@@ -154,7 +174,7 @@ class ProfileController extends Controller
         } catch (Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'could not update user experience',
+                'message' => 'could not update user profile',
                 'error' => $e->getMessage()
             ]);
         }
@@ -251,6 +271,23 @@ class ProfileController extends Controller
         }
     }
 
+    public function removeExperience($id)
+    {
+        try {
+            $skill = Experience::find($id);
+            $skill->delete();
+            return response()->json([
+                'success' => true,
+                'message' => 'success delete user experience',
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'could not delete user experience',
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
     public function removeSkill($id)
     {
         try {

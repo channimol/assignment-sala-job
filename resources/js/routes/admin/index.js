@@ -10,6 +10,8 @@ import AdminUserCreate from '@/js/pages/admin/users/create'
 import AdminUserEdit from '@/js/pages/admin/users/edit'
 import AdminUserView from '@/js/pages/admin/users/show'
 
+import AdminAccount from '@/js/pages/admin/account/index'
+
 export const AdminRoutes = {
     path: '/admin',
     component: AdminPrimaryLayout,
@@ -24,6 +26,8 @@ export const AdminRoutes = {
         { name: 'admin-create-user', path: 'users/create', component: AdminUserCreate },
         { name: 'admin-edit-user', path: 'users/:id/edit', component: AdminUserEdit },
         { name: 'admin-view-user', path: 'users/:id', component: AdminUserView },
+
+        { name: 'admin-account', path: 'account', component: AdminAccount },
     ],
     meta: {
         requireAdmin: true

@@ -20,7 +20,6 @@ class SendMail extends Mailable
      */
     public function __construct($data)
     {
-        // dd($this->data);
         $this->data = $data;
     }
 
@@ -35,6 +34,7 @@ class SendMail extends Mailable
         $phone = $this->data['student']->phone;
         $email = $this->data['student']->email;
         $job_title = $this->data["title"];
+        $isCv = $this->data["isCV"];
 
         $mail = $this->from(config('mail.username'), 'SALA JOB')
             ->subject($this->data["title"])
@@ -43,15 +43,15 @@ class SendMail extends Mailable
                 'email' => $email,
                 'phone' => $phone,
                 'job_title' => $job_title,
-            ])->attachData($this->data["attachments"], "curriculumn.pdf");
-        // foreach ($this->data["attachments"] as $filePath) {
-        //     $mail->attach($filePath);
-        // }
-
+            ]);
+        if ($isCv) {
+            $mail->attach($this->data["attachments"], [
+                'as' => 'curriculumn.pdf',
+                'mime' => 'application/pdf',
+            ]);
+        } else {
+            $mail->attachData($this->data["attachments"], "curriculumn.pdf");
+        }
         return $mail;
-        // ->attach($this->data["cv"], [
-        //     'as' => 'name.pdf',
-        //     'mime' => 'application/pdf',
-        // ]);;
     }
 }

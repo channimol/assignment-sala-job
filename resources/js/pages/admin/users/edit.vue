@@ -140,7 +140,7 @@ export default {
         password: null,
         role: null,
         roles: [
-            { id: 1, name: "Admin" },
+            // { id: 1, name: "Admin" },
             { id: 2, name: "Publisher" },
             { id: 3, name: "Student" }
         ],

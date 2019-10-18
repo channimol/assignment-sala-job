@@ -34,11 +34,11 @@ export default {
                     text: "Management",
                     model: false,
                     children: [
-                        {
-                            icon: "archive",
-                            text: "Students",
-                            nameUrl: "admin-list-students"
-                        },
+                        // {
+                        //     icon: "archive",
+                        //     text: "Students",
+                        //     nameUrl: "admin-list-students"
+                        // },
                         {
                             icon: "supervised_user_circle",
                             text: "Users",

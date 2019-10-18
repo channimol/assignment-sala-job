@@ -10,6 +10,8 @@ class CV extends Model
 
     protected $fillable = ['user_id', 'description'];
 
+    protected $appends = ['media_url'];
+
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -29,5 +31,10 @@ class CV extends Model
     public function languages()
     {
         return $this->belongsToMany(Language::class, 'language_cvs', 'cv_id', 'language_id')->withPivot('id', 'level');
+    }
+    public function getMediaUrlAttribute()
+    {
+        $media = $this->media;
+        return $media ? $media->url : $media;
     }
 }

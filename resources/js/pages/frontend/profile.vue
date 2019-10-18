@@ -17,9 +17,9 @@
                 </v-col>
                 <v-col cols="9">
                     <BasicInformation v-if="show==0" :user="user"></BasicInformation>
-                    <WorkExperience :user="user"></WorkExperience>
-                    <Skill :user="user"></Skill>
-                    <Language :user="user"></Language>
+                    <WorkExperience v-else-if="show==1" :user="user"></WorkExperience>
+                    <Skill v-else-if="show==2" :user="user"></Skill>
+                    <Language v-else :user="user"></Language>
                 </v-col>
             </v-row>
         </v-card>
@@ -28,9 +28,9 @@
 
 <script>
 import BasicInformation from "./student-profile/basic-Infomation/index";
-import Skill from "./student-profile/skill";
-import Language from "./student-profile/language";
-import WorkExperience from "./student-profile/work-experience";
+import Skill from "./student-profile/skill/index";
+import Language from "./student-profile/language/index";
+import WorkExperience from "./student-profile/work-experience/index";
 
 export default {
     components: {
